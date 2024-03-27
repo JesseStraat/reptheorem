@@ -98,6 +98,8 @@ and the derived files
 \NeedsTeXFormat{LaTeX2e}
 \documentclass{ltxdoc}
 \usepackage{\jobname}
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}
 \usepackage[final,
 hyperindex=false,
 colorlinks,
@@ -111,28 +113,33 @@ colorlinks,
 %</driver>
 % \fi
 %
-%\GetFileInfo{\jobname.sty}
+% \GetFileInfo{\jobname.sty}
 %
-%\title{^^A
-%	\textsf{reptheorem}\thanks{^^A
-%		Version \fileversion, last revised \filedate.^^A
-%	}^^A
-%}^^A
-%\author{^^A
-%	Jesse Straat^^A
-%}
-%\date{\filedate}
+% \title{^^A
+%     \textsf{reptheorem}\thanks{^^A
+%         Version \fileversion, last revised \filedate.^^A
+%     }^^A
+% }^^A
+% \author{^^A
+% 	Jesse Straat^^A
+% }
+% \date{\filedate}
 %
-%\maketitle
+% \maketitle
 %
-%\begin{abstract}
-%    \noindent The \textsf{reptheorem} is a package that allows one
-%    the repetition of theorem-like environments within a \LaTeX
-%    document, of even across documents. It is compatible with \textsf{amsmath}
-%    and \textsf{theoremtools}.
-%\end{abstract}
+% \begin{abstract}
+%     \noindent When writing a large manuscript, it is sometimes
+%     beneficial to repeat a theorem (or lemma or \dots) at
+%     an earlier or later point for didactical purposes.
+%     However, \textsf{thmtools}'s built-in |restatable|
+%     only allows replicating theorems \textit{after} they
+%     have been stated, and only in the same document.
+%     \textsf{reptheorem} solves the issue by making use
+%     of the |.aux| file, and also introduces its own file
+%     extension, |.thm|, to replicate theorems in other files.
+% \end{abstract}
 %
-%\tableofcontents
+% \tableofcontents
 %
 %\changes{v1.0}{2024-03-27}{First public release}
 %
@@ -144,7 +151,129 @@ colorlinks,
 %}
 %
 %
-%\section{Source code}
+%
+%
+% \section{Repeating theorems}
+% Let's say we define a theorem as follows:
+% \begin{verbatim}
+% \begin{theorem}[Yoneda Lemma]
+%     For \(F\colon \mathcal{C}\to \mathbf{Set}\) a functor,
+%     \([\mathcal{C}^\mathrm{op},\mathbf{Set}](YA, F) \cong F(A)\)%
+%     for all objects \(A\) in \(\mathcal{C}\).
+% \end{theorem}
+% \end{verbatim}
+% Its output is of course
+% \makethm{theorem}{thm:Yoneda}[Yoneda Lemma]{
+%     For \(F\colon \mathcal{C}\to \mathbf{Set}\) a functor,
+%     \([\mathcal{C}^\mathrm{op},\mathbf{Set}](YA, F) \cong F(A)\)
+%     for all objects \(A\) in \(\mathcal{C}\).
+% }
+% Now let's say we want to replicate the theorem
+% within the same document. That is what the new
+% environment \DescribeEnv{makethm} |makethm| is
+% used for.
+% \begin{verbatim}
+% \begin{makethm}{theorem}{thm:Yoneda}[Yoneda Lemma]{
+%     For \(F\colon \mathcal{C}\to \mathbf{Set}\) a functor,
+%     \([\mathcal{C}^\mathrm{op},\mathbf{Set}](YA, F) \cong F(A)\)%
+%     for all objects \(A\) in \(\mathcal{C}\).
+% \end{makethm}
+% \end{verbatim}
+% Its output is the same (in fact, we've secretly used
+% |makethm| in the previous example), but the important
+% difference is that we have saved the theorem for later use.\par
+% The |makethm| environment takes two mandatory arguments
+% and one optional one. The first mandatory argument is the
+% type of theorem environment, like |theorem|, |lemma|,
+% |definition|, etc. The second is the theorem's label.
+% The label is mandatory because to replicate the theorem,
+% we need to have a ``name'' attached to it. |makethm|
+% automatically attaches a |\label|, as well, so |\ref{thm:Yoneda}|
+% becomes \ref{thm:Yoneda}. The optional argument is passed
+% right to the optional argument of the theorem environment,
+% giving the name of a theorem\par
+% 
+% Now let's say we want to replicate the theorem later
+% or earlier in the text. This may be done if, for example,
+% the theorem is proven at a later point, or we want to
+% ``tease'' the reader with a powerful theorem that will be
+% proven later in the chapter. To do this, we use the
+% \DescribeMacro{repthm} command, as follows.
+% \begin{verbatim}
+% \repthm{theorem}{thm:Yoneda}
+% \end{verbatim}
+% This outputs the theorem again.
+% \repthm{theorem}{thm:Yoneda}
+% The label of this theorem is a |\ref|, and automatically
+% links to the original theorem statement.\par
+% If the original theorem statement exists in a different
+% file, or has not been created yet, we can add a placeholder
+% alt text to the |\repthm| as an optional argument, which
+% only displays if the theorem is undefined. For example,
+% |\repthm{theorem}{thm:foo}[bar]| returns
+% \repthm{theorem}{thm:foo}[bar]
+% Since we're using the |.aux| file, it is possible
+% to replicate a theorem before it is stated. For example,
+% \begin{verbatim}
+% \repthm{theorem}{thm:later}
+% \begin{makethm}{theorem}{thm:later}[Later]
+%     Alligator!
+% \end{makethm}
+% \end{verbatim}
+% returns
+% \repthm{theorem}{thm:later}
+% \makethm{theorem}{thm:later}[Later]{
+%     Alligator!
+% }
+% Note that it is necessary to run a |.tex| file twice
+% to replicate theorems ahead of time, similarly to
+% how one has to run a file twice to make sure the
+% references are correct.\par
+%
+% \section{Replicating theorems between files}
+% Let's say we have the following files for our project:
+% \begin{verbatim}
+% foo.tex
+% bar.tex
+% \end{verbatim}
+% Let's say that we have defined a theorem |thm:baz|
+% in |bar.tex|, and we want to replicate it in |foo.tex|.
+% To achieve this, we first use the \DescribeMacro{\theoremfile}
+% |\theoremfile| command in the preamble of |bar.tex|. This
+% compiles all theorems defined in |bar.tex| and outputs them
+% into a file |bar.thm|. To then import these into |foo.tex|, we
+% use \DescribeMacro{\loadtheorems} |\loadtheorems{bar.thm}| in
+% the preamble, which loads the theorems. One can then use
+% |\repthm| as usual.\par
+% Since the |.aux| file is loaded at |\begin{document}|, putting
+% |\loadtheorems| in the preamble of a file will guarantee that
+% the loaded theorem file will be overwritten by the theorems in
+% the |.aux| file, i.e., theorems defined in the same document.
+% In our example, if we also defined a |thm:baz| in |foo.tex|,
+% loading |bar.thm| into |foo.tex| will not overwrite the local
+% |thm:baz|.
+%
+% \subsection{Replicating theorems to subfiles}
+% Replicating theorems to different files is particularly
+% useful when working in big documents with multiple subfiles.
+% For example, let's say we have the files
+% \begin{verbatim}
+% main.tex
+% foo.tex
+% bar.tex
+% \end{verbatim}
+% Here, |main.tex| is generated by including |foo.tex|
+% and |bar.tex| as chapters, creating a single large document.
+% It is now possible to replicate theorems within the
+% subfiles by running |\theoremfile| in |main.tex|,
+% and then using |\loadtheorems{main.thm}| in
+% |foo.tex| and |bar.tex|. This will allow us to
+% use all theorems in the final |main.tex| in each of
+% the subfiles.
+%
+%
+%
+% \section{Source code}
 %    \begin{macrocode}
 %<*package>
 \ProvidesPackage{reptheorem}[2024-03-27 v1.0 Reptheorem package]
@@ -173,7 +302,9 @@ colorlinks,
 	\IfFileExists{#1}{
 		\input{#1}
 	}{
-		\PackageWarning{template}{File #1 not found. I will not import any theorems.}
+		\PackageWarning{reptheorem}{%
+			File #1 not found. I will not import any theorems.%
+		}
 	}
 }
 %    \end{macrocode}
@@ -182,7 +313,7 @@ colorlinks,
 % \begin{environment}{makethm}
 % On to defining the actual theorems to be saved.
 %    \begin{macrocode}
-\NewDocumentEnvironment{makethm}{ m m o +b }
+\NewDocumentCommand{\makethm}{ m m o m }
 	% m: the type of theorem environment
 	% m: the name of the theorem
 	% o: optional parameter for environment
@@ -194,20 +325,21 @@ colorlinks,
 		}{
 			\begin{#1}\label{#2}
 		}
-	}{% Runs after environment
+		#4
+	%}{% Runs after environment
 		\end{#1}
 		\expandafter\long\expandafter\gdef\csname thm@#2\endcsname{#4}%
 		\expandafter\gdef\csname thmdesc@#2\endcsname{#3}%
 		% Saving parameters to aux file
-		\def\@thmoutput{%
-			\string\expandafter\string\long\string\expandafter\string\gdef
-			\noexpand\csname thm@#2\string\endcsname{#4}%
+		\long\def\@thmoutput{%
+			\string\expandafter\string\long\string\expandafter%
+			\string\gdef\noexpand\csname thm@#2\string\endcsname{#4}%
 			^^J%
-			\string\expandafter\string\expandafter\string\gdef
-			\noexpand\csname thmdesc@#2\string\endcsname{#3}%
+			\string\expandafter\string\expandafter%
+			\string\gdef\noexpand\csname thmdesc@#2\string\endcsname{#3}%
 		}
 		\write\@auxout{\@thmoutput}
-		\if\thesistemplate@theoremfile\relax
+		\if\reptheorem@theoremfile\relax
 			% No file has been set
 		\else
 			% We have a theorem file
@@ -229,7 +361,8 @@ colorlinks,
 	% m: the name of the theorem
 	% o: alt text
 	\begingroup
-		\setcounter{old@counter}{\value{#1}}% Save theorem counter so we don't increase it
+		\setcounter{old@counter}{\value{#1}}
+		% Save theorem counter so we don't increase it
         \def\thetheorem{\ref{#2}}
 		\let\@@theoremnotdefined\relax
 		%
@@ -256,10 +389,16 @@ colorlinks,
 			}{% No theorem or alt text provided: throw warning
 				\begin{#1}
 				\end{#1}
-				\PackageWarning{template}{Theorem #2 not defined; rebuild your project. If the issue persists, create the theorem using \makethm or consider adding alt text to \repthm using the optional parameter}
+				\PackageWarning{reptheorem}{%
+					Theorem #2 not defined; rebuild your project.
+					If the issue persists, create the theorem using
+					\makethm or consider adding alt text to \repthm
+					using the optional parameter%
+				}
 			}
 		\fi
-		\setcounter{#1}{\value{old@counter}}% Reset theorem counter back to original
+		\setcounter{#1}{\value{old@counter}}
+		% Reset theorem counter back to original
     \endgroup
 }
 %    \end{macrocode}
