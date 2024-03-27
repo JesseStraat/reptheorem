@@ -19,10 +19,10 @@
 *.synctex(busy)
 *.fdb_latexmk
 *.fls
-*.txt
 *.dvi
 *.glo
 *.hd
 *.ins
 *.sty
 *.gls
+*.md
