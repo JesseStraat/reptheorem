@@ -212,6 +212,9 @@ colorlinks,
 % only displays if the theorem is undefined. For example,
 % |\repthm{theorem}{thm:foo}[bar]| returns
 % \repthm{theorem}{thm:foo}[bar]
+% If we do the same without providing an alt text, we get
+% \repthm{theorem}{thm:foo}
+% together with a warning.\par
 % Since we're using the |.aux| file, it is possible
 % to replicate a theorem before it is stated. For example,
 % \begin{verbatim}
@@ -243,8 +246,8 @@ colorlinks,
 % compiles all theorems defined in |bar.tex| and outputs them
 % into a file |bar.thm|. To then import these into |foo.tex|, we
 % use \DescribeMacro{\loadtheorems} |\loadtheorems{bar.thm}| in
-% the preamble, which loads the theorems. One can then use
-% |\repthm| as usual.\par
+% the preamble, which loads all theorems saved in |bar.thm|.
+% One can then use |\repthm| as usual.\par
 % Since the |.aux| file is loaded at |\begin{document}|, putting
 % |\loadtheorems| in the preamble of a file will guarantee that
 % the loaded theorem file will be overwritten by the theorems in
