@@ -18,6 +18,17 @@
 % and the derived files
 %	reptheorem.sty, reptheorem.pdf, reptheorem.ins
 %
+% Unpacking:
+% (a) If reptheorem.ins is present:
+%		latex reptheorem.ins
+% (b) If reptheorem.ins is absent:
+%		latex reptheorem.dtx
+%
+% Documentation:
+% 		pdflatex reptheorem.dtx
+%       makeindex -s gind.ist -o reptheorem.ind reptheorem.idx
+%       makeindex -s gglo.ist -o reptheorem.gls reptheorem.glo
+%       pdflatex reptheorem.dtx
 % dtx file based on https://www.texdev.net/2009/10/06/a-model-dtx-file/
 %
 %<*ignore>
@@ -72,6 +83,22 @@ and the derived files
 \generate{
 	\file{\jobname.sty}{\from{\jobname.dtx}{package}}
 }
+
+\obeyspaces
+\Msg{************************************************************************}
+\Msg{*}
+\Msg{* To finish the installation you have to move the following}
+\Msg{* file into a directory searched by TeX:}
+\Msg{*}
+\Msg{*     repthm.sty}
+\Msg{*}
+\Msg{* To produce the documentation run the file `reptheorem.dtx'}
+\Msg{* through LaTeX.}
+\Msg{*}
+\Msg{* Happy TeXing!}
+\Msg{*}
+\Msg{************************************************************************}
+
 %</install>
 %<install>\endbatchfile
 %
