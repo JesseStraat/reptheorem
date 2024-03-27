@@ -1,0 +1,27 @@
+# Untracked file extensions:
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.idx
+*.ilg
+*.ind
+*.log
+*.nav
+*.out
+*.run.xml
+*.snm
+*.thm
+*.toc
+*.vrb
+*.pdf
+*.synctex.gz
+*.synctex(busy)
+*.fdb_latexmk
+*.fls
+*.txt
+*.dvi
+*.glo
+*.hd
+*.ins
+*.sty
