@@ -163,11 +163,11 @@ colorlinks,
 % \end{theorem}
 % \end{verbatim}
 % Its output is of course
-% \makethm{theorem}{thm:Yoneda}[Yoneda Lemma]{
+% \begin{makethm}{theorem}{thm:Yoneda}[Yoneda Lemma]
 %     For \(F\colon \mathcal{C}\to \mathbf{Set}\) a functor,
 %     \([\mathcal{C}^\mathrm{op},\mathbf{Set}](YA, F) \cong F(A)\)
 %     for all objects \(A\) in \(\mathcal{C}\).
-% }
+% \end{makethm}
 % Now let's say we want to replicate the theorem
 % within the same document. That is what the new
 % environment \DescribeEnv{makethm} |makethm| is
@@ -222,9 +222,9 @@ colorlinks,
 % \end{verbatim}
 % returns
 % \repthm{theorem}{thm:later}
-% \makethm{theorem}{thm:later}[Later]{
-%     Alligator!
-% }
+% \begin{makethm}{theorem}{thm:later}[Later]
+%     Alligator
+% \end{makethm}
 % Note that it is necessary to run a |.tex| file twice
 % to replicate theorems ahead of time, similarly to
 % how one has to run a file twice to make sure the
@@ -313,25 +313,24 @@ colorlinks,
 % \begin{environment}{makethm}
 % On to defining the actual theorems to be saved.
 %    \begin{macrocode}
-\NewDocumentCommand{\makethm}{ m m o m }
+\NewDocumentEnvironment{makethm}{ m m o +b }
 	% m: the type of theorem environment
 	% m: the name of the theorem
 	% o: optional parameter for environment
 	% b: the content of the theorem
 	%
-	{% Runs before environment
+	{%
 		\IfValueTF{#3}{% Check if theorem has optional arguments
 			\begin{#1}[#3]\label{#2}
 		}{
 			\begin{#1}\label{#2}
 		}
 		#4
-	%}{% Runs after environment
 		\end{#1}
 		\expandafter\long\expandafter\gdef\csname thm@#2\endcsname{#4}%
 		\expandafter\gdef\csname thmdesc@#2\endcsname{#3}%
 		% Saving parameters to aux file
-		\long\def\@thmoutput{%
+		\long\gdef\@thmoutput{%
 			\string\expandafter\string\long\string\expandafter%
 			\string\gdef\noexpand\csname thm@#2\string\endcsname{#4}%
 			^^J%
@@ -346,7 +345,7 @@ colorlinks,
 			% Saving parameters to theorem file
 			\write\@thmlist{\@thmoutput}
 		\fi
-	}
+	}{}
 %    \end{macrocode}
 % \end{environment}
 %
@@ -392,7 +391,7 @@ colorlinks,
 				\PackageWarning{reptheorem}{%
 					Theorem #2 not defined; rebuild your project.
 					If the issue persists, create the theorem using
-					\makethm or consider adding alt text to \repthm
+					\begin{makethm} or consider adding alt text to \repthm
 					using the optional parameter%
 				}
 			}
