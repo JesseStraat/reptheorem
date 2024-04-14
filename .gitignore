@@ -26,3 +26,7 @@
 *.sty
 *.gls
 *.md
+*.zip
+
+# Track README file
+!.github/README.md
