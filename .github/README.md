@@ -21,7 +21,7 @@ pdflatex reptheorem.dtx
 ```
 This automatically unpacks the package, as well.
 
-Alternatively, the documentation can be found on the [CTAN page](https://ctan.org/tex-archive/macros/latex/contrib/reptheorem).
+Alternatively, the documentation can be found on the [CTAN page](https://ctan.org/pkg/reptheorem).
 
 ---
 
@@ -29,4 +29,4 @@ Alternatively, the documentation can be found on the [CTAN page](https://ctan.or
 
 License: [LPPL1.3c](https://www.latex-project.org/lppl.txt)
 
-[CTAN page](https://ctan.org/tex-archive/macros/latex/contrib/reptheorem)
+[CTAN page](https://ctan.org/pkg/reptheorem)
