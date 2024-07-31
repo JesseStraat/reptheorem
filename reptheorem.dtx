@@ -89,7 +89,7 @@ License: [LPPL1.3c](https://www.latex-project.org/lppl.txt)
 \input docstrip.tex
 \Msg{************************************************************************}
 \Msg{* Installation}
-\Msg{* Package: reptheorem 2024-03-27 v1.0}
+\Msg{* Package: reptheorem 2024-03-27 v1.1}
 \Msg{************************************************************************}
 
 \keepsilent
@@ -352,7 +352,7 @@ colorlinks,
 % \section{Source code}
 %    \begin{macrocode}
 %<*package>
-\ProvidesPackage{reptheorem}[2024-03-27 v1.0 Reptheorem package]
+\ProvidesPackage{reptheorem}[2024-05-03 v1.1 Reptheorem package]
 %    \end{macrocode}
 %
 % \begin{macro}{\theoremfile}
@@ -387,6 +387,7 @@ colorlinks,
 % \end{macro}
 %
 % \begin{environment}{makethm}
+% \changes{v1.1}{2024/05/03}{Now saves theorem environment type.}
 % On to defining the actual theorems to be saved.
 %    \begin{macrocode}
 \NewDocumentEnvironment{makethm}{ m m o +b }
@@ -403,15 +404,19 @@ colorlinks,
 		}
 		#4
 		\end{#1}
+		\expandafter\gdef\csname thmtype@#2\endcsname{#1} 
 		\expandafter\long\expandafter\gdef\csname thm@#2\endcsname{#4}%
 		\expandafter\gdef\csname thmdesc@#2\endcsname{#3}%
 		% Saving parameters to aux file
 		\long\gdef\@thmoutput{%
+			\string\expandafter\string\gdef\noexpand%
+			\csname thmtype@#2\string\endcsname{#1}%
+			^^J%
 			\string\expandafter\string\long\string\expandafter%
 			\string\gdef\noexpand\csname thm@#2\string\endcsname{#4}%
 			^^J%
-			\string\expandafter\string\expandafter%
-			\string\gdef\noexpand\csname thmdesc@#2\string\endcsname{#3}%
+			\string\expandafter\string\gdef\noexpand%
+			\csname thmdesc@#2\string\endcsname{#3}%
 		}
 		\write\@auxout{\@thmoutput}
 		\if\reptheorem@theoremfile\relax
@@ -426,53 +431,60 @@ colorlinks,
 % \end{environment}
 %
 % \begin{macro}{\repthm}
+% \changes{v1.1}{2024/05/03}{Now saves theorem environment type.}
 % To repeat a theorem, use the |\repthm| command.
 % The type of theorem is not saved, so it is necessary to
 % respecify it each time a theorem is repeated.
 %    \begin{macrocode}
 \newcounter{old@counter}
-\NewDocumentCommand{\repthm}{ m m +o }{
-	% m: the type of theorem environment
+\NewDocumentCommand{\repthm}{ m +o }{
 	% m: the name of the theorem
 	% o: alt text
 	\begingroup
-		\setcounter{old@counter}{\value{#1}}
+		% Check if thmtype is given
+		\ifcsname thmtype@#1\endcsname%
+			\expandafter\let\expandafter\@@thmtype\csname thmtype@#1\endcsname%
+		\else%
+			\def\@@thmtype{theorem}%
+		\fi%
+		%
 		% Save theorem counter so we don't increase it
-        \def\thetheorem{\ref{#2}}
+		\setcounter{old@counter}{\value{\@@thmtype}}
+        \def\thetheorem{\ref{#1}}
 		\let\@@theoremnotdefined\relax
 		%
-		\ifcsname thm@#2\endcsname% Check if theorem is even defined
+		\ifcsname thm@#1\endcsname% Check if theorem is even defined
 			% Theorem is defined
-			\expandafter\edef\expandafter\@@thmdesc{\csname thmdesc@#2\endcsname}%
-			\expandafter\let\expandafter\@@thm\csname thm@#2\endcsname
+			\expandafter\edef\expandafter\@@thmdesc{\csname thmdesc@#1\endcsname}%
+			\expandafter\let\expandafter\@@thm\csname thm@#1\endcsname
 			% Output theorem
 			\IfValueTF{\@@thmdesc}{% Check if theorem has name
-				\begin{#1}[\@@thmdesc]
+				\begin{\@@thmtype}[\@@thmdesc]
 					\@@thm
-				\end{#1}
+				\end{\@@thmtype}
 			}{% No optionals
-				\begin{#1}
+				\begin{\@@thmtype}
 					\@@thm
-				\end{#1}
+				\end{\@@thmtype}
 			}
 		\else
 			% Theorem undefined
-			\IfValueTF{#3}{
-				\begin{#1}
-					#3
-				\end{#1}
+			\IfValueTF{#2}{
+				\begin{\@@thmtype}
+					#2
+				\end{\@@thmtype}
 			}{% No theorem or alt text provided: throw warning
-				\begin{#1}
-				\end{#1}
+				\begin{\@@thmtype}
+				\end{\@@thmtype}
 				\PackageWarning{reptheorem}{%
-					Theorem #2 not defined; rebuild your project.
+					Theorem #1 not defined; rebuild your project.
 					If the issue persists, create the theorem using
 					\begin{makethm} or consider adding alt text to \repthm
 					using the optional parameter%
 				}
 			}
 		\fi
-		\setcounter{#1}{\value{old@counter}}
+		\setcounter{\@@thmtype}{\value{old@counter}}
 		% Reset theorem counter back to original
     \endgroup
 }
