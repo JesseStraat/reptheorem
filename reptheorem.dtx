@@ -271,33 +271,33 @@ colorlinks,
 % the theorem is proven at a later point, or we want to
 % ``tease'' the reader with a powerful theorem that will be
 % proven later in the chapter. To do this, we use the
-% \DescribeMacro{repthm} command, as follows.
+% \DescribeMacro{\repthm} command, as follows.
 % \begin{verbatim}
-% \repthm{theorem}{thm:Yoneda}
+% \repthm{thm:Yoneda}
 % \end{verbatim}
 % This outputs the theorem again.
-% \repthm{theorem}{thm:Yoneda}
+% \repthm{thm:Yoneda}
 % The label of this theorem is a |\ref|, and automatically
 % links to the original theorem statement.\par
 % If the original theorem statement exists in a different
 % file, or has not been created yet, we can add a placeholder
 % alt text to the |\repthm| as an optional argument, which
 % only displays if the theorem is undefined. For example,
-% |\repthm{theorem}{thm:foo}[bar]| returns
-% \repthm{theorem}{thm:foo}[bar]
+% |\repthm{thm:foo}[bar]| returns
+% \repthm{thm:foo}[bar]
 % If we do the same without providing an alt text, we get
-% \repthm{theorem}{thm:foo}
+% \repthm{thm:foo}
 % together with a warning.\par
 % Since we're using the |.aux| file, it is possible
 % to replicate a theorem before it is stated. For example,
 % \begin{verbatim}
-% \repthm{theorem}{thm:later}
+% \repthm{thm:later}
 % \begin{makethm}{theorem}{thm:later}[Later]
 %     Alligator!
 % \end{makethm}
 % \end{verbatim}
 % returns
-% \repthm{theorem}{thm:later}
+% \repthm{thm:later}
 % \begin{makethm}{theorem}{thm:later}[Later]
 %     Alligator
 % \end{makethm}
