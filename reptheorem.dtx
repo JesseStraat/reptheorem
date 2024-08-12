@@ -89,7 +89,7 @@ License: [LPPL1.3c](https://www.latex-project.org/lppl.txt)
 \input docstrip.tex
 \Msg{************************************************************************}
 \Msg{* Installation}
-\Msg{* Package: reptheorem 2024-03-27 v1.1}
+\Msg{* Package: reptheorem 2024-08-12 v1.1}
 \Msg{************************************************************************}
 
 \keepsilent
@@ -352,7 +352,7 @@ colorlinks,
 % \section{Source code}
 %    \begin{macrocode}
 %<*package>
-\ProvidesPackage{reptheorem}[2024-05-03 v1.1 Reptheorem package]
+\ProvidesPackage{reptheorem}[2024-08-12 v1.1 Reptheorem package]
 %    \end{macrocode}
 %
 % \begin{macro}{\theoremfile}
@@ -387,7 +387,7 @@ colorlinks,
 % \end{macro}
 %
 % \begin{environment}{makethm}
-% \changes{v1.1}{2024/05/03}{Now saves theorem environment type.}
+% \changes{v1.1}{2024/05/03}{Now saves theorem environment type, breaking backwards compatibility}
 % On to defining the actual theorems to be saved.
 %    \begin{macrocode}
 \NewDocumentEnvironment{makethm}{ m m o +b }
@@ -431,7 +431,7 @@ colorlinks,
 % \end{environment}
 %
 % \begin{macro}{\repthm}
-% \changes{v1.1}{2024/05/03}{Now saves theorem environment type.}
+% \changes{v1.1}{2024/05/03}{Now saves theorem environment type, breaking backwards compatibility}
 % To repeat a theorem, use the |\repthm| command.
 % The type of theorem is not saved, so it is necessary to
 % respecify it each time a theorem is repeated.
