@@ -285,9 +285,9 @@ colorlinks,
 % only displays if the theorem is undefined. For example,
 % |\repthm{thm:foo}[bar]| returns
 % \repthm{thm:foo}[bar]
-% If we do the same without providing an alt text, we get
+% \noindent If we do the same without providing an alt text, we get
 % \repthm{thm:foo}
-% together with a warning.\par
+% \noindent together with a warning.\par
 % Since we're using the |.aux| file, it is possible
 % to replicate a theorem before it is stated. For example,
 % \begin{verbatim}
@@ -433,8 +433,6 @@ colorlinks,
 % \begin{macro}{\repthm}
 % \changes{v1.1}{2024/05/03}{Now saves theorem environment type, breaking backwards compatibility}
 % To repeat a theorem, use the |\repthm| command.
-% The type of theorem is not saved, so it is necessary to
-% respecify it each time a theorem is repeated.
 %    \begin{macrocode}
 \newcounter{old@counter}
 \NewDocumentCommand{\repthm}{ m +o }{
