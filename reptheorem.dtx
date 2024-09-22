@@ -387,6 +387,7 @@ colorlinks,
 % \changes{v1.1}{2024/05/03}{Now saves theorem environment type, breaking backwards compatibility}
 % \changes{v1.2}{2024/09/21}{Environment end moved to fix vertical spacing.}
 % \changes{v1.2}{2024/09/22}{Theorem name is only saved if it exists.}
+% \changes{v1.2}{2024/09/22}{Renamed theorem output variable to be unique for each theorem.}
 % On to defining the actual theorems to be saved.
 %    \begin{macrocode}
 \NewDocumentEnvironment{makethm}{ m m o +b }
@@ -409,7 +410,7 @@ colorlinks,
 				\expandafter\gdef\csname thmdesc@#2\endcsname{#3}%
 			}
 			% Saving parameters to aux file
-			\long\gdef\@thmoutput{%
+			\expandafter\long\expandafter\gdef\csname thmoutput@#2\endcsname{%
 				\string\expandafter\string\gdef\noexpand%
 				\csname thmtype@#2\string\endcsname{#1}%
 				^^J%
@@ -421,13 +422,13 @@ colorlinks,
 				\csname thmdesc@#2\string\endcsname{#3}%
 				}
 			}
-			\write\@auxout{\@thmoutput}
+			\write\@auxout{\csname thmoutput@#2\endcsname}
 			\if\reptheorem@theoremfile\relax
 				% No file has been set
 			\else
 				% We have a theorem file
 				% Saving parameters to theorem file
-				\write\@thmlist{\@thmoutput}
+				\write\@thmlist{\csname thmoutput@#2\endcsname}
 			\fi
 		\end{#1}
 	}{}
