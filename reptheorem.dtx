@@ -271,10 +271,7 @@ colorlinks,
 % the theorem is proven at a later point, or we want to
 % ``tease'' the reader with a powerful theorem that will be
 % proven later in the chapter. To do this, we use the
-% \DescribeMacro{\repthm} command, as follows.
-% \begin{verbatim}
-% \repthm{thm:Yoneda}
-% \end{verbatim}
+% \DescribeMacro{\repthm} |\repthm| command: |\repthm{thm:Yoneda}|.
 % This outputs the theorem again.
 % \repthm{thm:Yoneda}
 % The label of this theorem is a |\ref|, and automatically
@@ -292,13 +289,13 @@ colorlinks,
 % to replicate a theorem before it is stated. For example,
 % \begin{verbatim}
 % \repthm{thm:later}
-% \begin{makethm}{theorem}{thm:later}[Later]
+% \begin{makethm}{theorem}{thm:later}
 %     Alligator!
 % \end{makethm}
 % \end{verbatim}
 % returns
 % \repthm{thm:later}
-% \begin{makethm}{theorem}{thm:later}[Later]
+% \begin{makethm}{theorem}{thm:later}
 %     Alligator
 % \end{makethm}
 % Note that it is necessary to run a |.tex| file twice
@@ -389,6 +386,7 @@ colorlinks,
 % \begin{environment}{makethm}
 % \changes{v1.1}{2024/05/03}{Now saves theorem environment type, breaking backwards compatibility}
 % \changes{v1.2}{2024/09/21}{Environment end moved to fix vertical spacing.}
+% \changes{v1.2}{2024/09/22}{Theorem name is only saved if it exists.}
 % On to defining the actual theorems to be saved.
 %    \begin{macrocode}
 \NewDocumentEnvironment{makethm}{ m m o +b }
@@ -407,7 +405,9 @@ colorlinks,
 			#4
 			\expandafter\gdef\csname thmtype@#2\endcsname{#1}%
 			\expandafter\long\expandafter\gdef\csname thm@#2\endcsname{#4}%
-			\expandafter\gdef\csname thmdesc@#2\endcsname{#3}%
+			\IfValueT{#3}{% Only save theorem name if it exists
+				\expandafter\gdef\csname thmdesc@#2\endcsname{#3}%
+			}
 			% Saving parameters to aux file
 			\long\gdef\@thmoutput{%
 				\string\expandafter\string\gdef\noexpand%
@@ -415,9 +415,11 @@ colorlinks,
 				^^J%
 				\string\expandafter\string\long\string\expandafter%
 				\string\gdef\noexpand\csname thm@#2\string\endcsname{#4}%
+				\IfValueT{#3}{
 				^^J%
 				\string\expandafter\string\gdef\noexpand%
 				\csname thmdesc@#2\string\endcsname{#3}%
+				}
 			}
 			\write\@auxout{\@thmoutput}
 			\if\reptheorem@theoremfile\relax
@@ -434,6 +436,7 @@ colorlinks,
 %
 % \begin{macro}{\repthm}
 % \changes{v1.1}{2024/05/03}{Now saves theorem environment type, breaking backwards compatibility}
+% \changes{v1.2}{2024/09/22}{Fixed bug where theorems got a name even if undefined.}
 % To repeat a theorem, use the |\repthm| command.
 %    \begin{macrocode}
 \newcounter{old@counter}
@@ -455,18 +458,17 @@ colorlinks,
 		%
 		\ifcsname thm@#1\endcsname% Check if theorem is even defined
 			% Theorem is defined
-			\expandafter\edef\expandafter\@@thmdesc{\csname thmdesc@#1\endcsname}%
 			\expandafter\let\expandafter\@@thm\csname thm@#1\endcsname
 			% Output theorem
-			\IfValueTF{\@@thmdesc}{% Check if theorem has name
-				\begin{\@@thmtype}[\@@thmdesc]
+			\ifcsname thmdesc@#1\endcsname % Check if theorem has name
+				\begin{\@@thmtype}[\csname thmdesc@#1\endcsname]
 					\@@thm
 				\end{\@@thmtype}
-			}{% No optionals
+			\else % No optionals
 				\begin{\@@thmtype}
 					\@@thm
 				\end{\@@thmtype}
-			}
+			\fi
 		\else
 			% Theorem undefined
 			\IfValueTF{#2}{
