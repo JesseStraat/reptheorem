@@ -402,30 +402,31 @@ colorlinks,
 		}{
 			\begin{#1}\label{#2}
 		}
-		#4
+		% \begin{theorem}
+			#4
+			\expandafter\gdef\csname thmtype@#2\endcsname{#1}%
+			\expandafter\long\expandafter\gdef\csname thm@#2\endcsname{#4}%
+			\expandafter\gdef\csname thmdesc@#2\endcsname{#3}%
+			% Saving parameters to aux file
+			\long\gdef\@thmoutput{%
+				\string\expandafter\string\gdef\noexpand%
+				\csname thmtype@#2\string\endcsname{#1}%
+				^^J%
+				\string\expandafter\string\long\string\expandafter%
+				\string\gdef\noexpand\csname thm@#2\string\endcsname{#4}%
+				^^J%
+				\string\expandafter\string\gdef\noexpand%
+				\csname thmdesc@#2\string\endcsname{#3}%
+			}
+			\write\@auxout{\@thmoutput}
+			\if\reptheorem@theoremfile\relax
+				% No file has been set
+			\else
+				% We have a theorem file
+				% Saving parameters to theorem file
+				\write\@thmlist{\@thmoutput}
+			\fi
 		\end{#1}
-		\expandafter\gdef\csname thmtype@#2\endcsname{#1} 
-		\expandafter\long\expandafter\gdef\csname thm@#2\endcsname{#4}%
-		\expandafter\gdef\csname thmdesc@#2\endcsname{#3}%
-		% Saving parameters to aux file
-		\long\gdef\@thmoutput{%
-			\string\expandafter\string\gdef\noexpand%
-			\csname thmtype@#2\string\endcsname{#1}%
-			^^J%
-			\string\expandafter\string\long\string\expandafter%
-			\string\gdef\noexpand\csname thm@#2\string\endcsname{#4}%
-			^^J%
-			\string\expandafter\string\gdef\noexpand%
-			\csname thmdesc@#2\string\endcsname{#3}%
-		}
-		\write\@auxout{\@thmoutput}
-		\if\reptheorem@theoremfile\relax
-			% No file has been set
-		\else
-			% We have a theorem file
-			% Saving parameters to theorem file
-			\write\@thmlist{\@thmoutput}
-		\fi
 	}{}
 %    \end{macrocode}
 % \end{environment}
