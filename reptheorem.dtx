@@ -89,7 +89,7 @@ License: [LPPL1.3c](https://www.latex-project.org/lppl.txt)
 \input docstrip.tex
 \Msg{************************************************************************}
 \Msg{* Installation}
-\Msg{* Package: reptheorem 2024-08-12 v1.1}
+\Msg{* Package: reptheorem 2024-09-22 v1.2}
 \Msg{************************************************************************}
 
 \keepsilent
@@ -199,7 +199,7 @@ colorlinks,
 % \date{\filedate}
 %
 % \maketitle
-%
+%^^A
 % \begin{abstract}
 %     \noindent When writing a large manuscript, it is sometimes
 %     beneficial to repeat a theorem (or lemma or \dots) at
@@ -211,21 +211,21 @@ colorlinks,
 %     of the |.aux| file, and also introduces its own file
 %     extension, |.thm|, to replicate theorems in other files.
 % \end{abstract}
-%
+%^^A
 % \tableofcontents
-%
+%^^A
 %\changes{v1.0}{2024-03-27}{First public release}
-%
-%
-%
+%^^A
+%^^A
+%^^A
 %\StopEventually{^^A
 %  \PrintChanges
 %  \PrintIndex
 %}
-%
-%
-%
-%
+%^^A
+%^^A
+%^^A
+%^^A
 % \section{Repeating theorems}
 % Let's say we define a theorem as follows:
 % \begin{verbatim}
@@ -257,15 +257,15 @@ colorlinks,
 % difference is that we have saved the theorem for later use.\par
 % The |makethm| environment takes two mandatory arguments
 % and one optional one. The first mandatory argument is the
-% type of theorem environment, like |theorem|, |lemma|,
+% type of theorem environment as defined in \textsf{amsthm}, like |theorem|, |lemma|,
 % |definition|, etc. The second is the theorem's label.
-% The label is mandatory because to replicate the theorem,
+% The label is mandatory since, to replicate the theorem,
 % we need to have a ``name'' attached to it. |makethm|
 % automatically attaches a |\label|, as well, so |\ref{thm:Yoneda}|
 % becomes \ref{thm:Yoneda}. The optional argument is passed
 % right to the optional argument of the theorem environment,
-% giving the name of a theorem\par
-% 
+% giving the theorem a name.\par
+%^^A
 % Now let's say we want to replicate the theorem later
 % or earlier in the text. This may be done if, for example,
 % the theorem is proven at a later point, or we want to
@@ -284,7 +284,10 @@ colorlinks,
 % \repthm{thm:foo}[bar]
 % \noindent If we do the same without providing an alt text, we get
 % \repthm{thm:foo}
-% \noindent together with a warning.\par
+% \noindent together with a warning: ``Package \textsf{reptheorem}: Theorem |thm:foo|
+% not defined; rebuild your project. If the issue persists, create the theorem
+% using |\begin{makethm}| or consider adding alt text to |\repthm| using the optional
+% parameter.''\par
 % Since we're using the |.aux| file, it is possible
 % to replicate a theorem before it is stated. For example,
 % \begin{verbatim}
@@ -302,7 +305,7 @@ colorlinks,
 % to replicate theorems ahead of time, similarly to
 % how one has to run a file twice to make sure the
 % references are correct.\par
-%
+%^^A
 % \section{Replicating theorems between files}
 % Let's say we have the following files for our project:
 % \begin{verbatim}
@@ -325,7 +328,7 @@ colorlinks,
 % In our example, if we also defined a |thm:baz| in |foo.tex|,
 % loading |bar.thm| into |foo.tex| will not overwrite the local
 % |thm:baz|.
-%
+%^^A
 % \subsection{Replicating theorems to subfiles}
 % Replicating theorems to different files is particularly
 % useful when working in big documents with multiple subfiles.
@@ -343,15 +346,14 @@ colorlinks,
 % |foo.tex| and |bar.tex|. This will allow us to
 % use all theorems in the final |main.tex| in each of
 % the subfiles.
-%
-%
-%
+%^^A
+%^^A
+%^^A
 % \section{Source code}
 %    \begin{macrocode}
 %<*package>
-\ProvidesPackage{reptheorem}[2024-08-12 v1.1 Reptheorem package]
+\ProvidesPackage{reptheorem}[2024-09-22 v1.2 Reptheorem package]
 %    \end{macrocode}
-%
 % \begin{macro}{\theoremfile}
 % Using |\theoremfile| will output all saved theorems into an output file.
 % By default, if your \LaTeX file is |foo.tex|, the output file is |foo.thm|.
@@ -366,7 +368,6 @@ colorlinks,
 }
 %    \end{macrocode}
 % \end{macro}
-%
 % \begin{macro}{\loadtheorems}
 % If you have exported saved theorems to a file, you can load them
 % into another file using the macro |\loadtheorems|.
@@ -382,7 +383,6 @@ colorlinks,
 }
 %    \end{macrocode}
 % \end{macro}
-%
 % \begin{environment}{makethm}
 % \changes{v1.1}{2024/05/03}{Now saves theorem environment type, breaking backwards compatibility}
 % \changes{v1.2}{2024/09/21}{Environment end moved to fix vertical spacing.}
@@ -434,7 +434,6 @@ colorlinks,
 	}{}
 %    \end{macrocode}
 % \end{environment}
-%
 % \begin{macro}{\repthm}
 % \changes{v1.1}{2024/05/03}{Now saves theorem environment type, breaking backwards compatibility}
 % \changes{v1.2}{2024/09/22}{Fixed bug where theorems got a name even if undefined.}
@@ -493,8 +492,6 @@ colorlinks,
 }
 %    \end{macrocode}
 % \end{macro}
-
-
 %    \begin{macrocode}
 %</package>
 %    \end{macrocode}
