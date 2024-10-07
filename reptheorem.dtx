@@ -384,7 +384,7 @@ colorlinks,
 %    \end{macrocode}
 % \end{macro}
 % \begin{environment}{makethm}
-% \changes{v1.1}{2024/05/03}{Now saves theorem environment type, breaking backwards compatibility}
+% \changes{v1.1}{2024/05/03}{Now saves theorem environment type, breaking backwards compatibility.}
 % \changes{v1.2}{2024/09/21}{Environment end moved to fix vertical spacing.}
 % \changes{v1.2}{2024/09/22}{Theorem name is only saved if it exists.}
 % \changes{v1.2}{2024/09/22}{Renamed theorem output variable to be unique for each theorem.}
@@ -435,8 +435,9 @@ colorlinks,
 %    \end{macrocode}
 % \end{environment}
 % \begin{macro}{\repthm}
-% \changes{v1.1}{2024/05/03}{Now saves theorem environment type, breaking backwards compatibility}
+% \changes{v1.1}{2024/05/03}{Now saves theorem environment type, breaking backwards compatibility.}
 % \changes{v1.2}{2024/09/22}{Fixed bug where theorems got a name even if undefined.}
+% \changes{v1.3}{2024/10/07}{Changed thetheorem to csname to fix compatibility theorem types not called ``theorem''.}
 % To repeat a theorem, use the |\repthm| command.
 %    \begin{macrocode}
 \newcounter{old@counter}
