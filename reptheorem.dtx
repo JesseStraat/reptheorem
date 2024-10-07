@@ -437,6 +437,7 @@ colorlinks,
 % \begin{macro}{\repthm}
 % \changes{v1.1}{2024/05/03}{Now saves theorem environment type, breaking backwards compatibility.}
 % \changes{v1.2}{2024/09/22}{Fixed bug where theorems got a name even if undefined.}
+% \changes{v1.3}{2024/10/07}{Added hyperref named destination compatibility by setting counter to very low value}
 % \changes{v1.3}{2024/10/07}{Changed thetheorem to csname to fix compatibility theorem types not called ``theorem''.}
 % To repeat a theorem, use the |\repthm| command.
 %    \begin{macrocode}
@@ -454,6 +455,7 @@ colorlinks,
 		%
 		% Save theorem counter so we don't increase it
 		\setcounter{old@counter}{\value{\@@thmtype}}
+		\setcounter{\@@thmtype}{-900}
 		\expandafter\def\csname the\@@thmtype\endcsname{\ref{#1}}
 		\let\@@theoremnotdefined\relax
 		%
