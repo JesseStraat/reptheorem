@@ -453,7 +453,7 @@ colorlinks,
 		%
 		% Save theorem counter so we don't increase it
 		\setcounter{old@counter}{\value{\@@thmtype}}
-        \def\thetheorem{\ref{#1}}
+		\expandafter\def\csname the\@@thmtype\endcsname{\ref{#1}}
 		\let\@@theoremnotdefined\relax
 		%
 		\ifcsname thm@#1\endcsname% Check if theorem is even defined
