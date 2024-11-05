@@ -437,9 +437,14 @@ colorlinks,
 % \begin{macro}{\repthm}
 % \changes{v1.1}{2024/05/03}{Now saves theorem environment type, breaking backwards compatibility.}
 % \changes{v1.2}{2024/09/22}{Fixed bug where theorems got a name even if undefined.}
-% \changes{v1.3}{2024/10/07}{Added hyperref named destination compatibility by setting counter to very low value}
+% \changes{v1.3}{2024/10/07}{Added hyperref named destination compatibility by setting counter to very low value.}
 % \changes{v1.3}{2024/10/07}{Changed thetheorem to csname to fix compatibility with theorem types not called ``theorem''.}
-% To repeat a theorem, use the |\repthm| command.
+% \changes{v1.4}{2024/11/05}{Added warnings for unknown counter and unknown theorem type.}
+% To repeat a theorem, use the |\repthm| command.\par
+% If the theorem type shares its counter with another theorem type,
+% e.g., |lemma| having the same counter as |thoerem|, make sure you
+% have |thmtools| imported. Its |\@counteralias| macro is essential
+% for the counters to work.
 %    \begin{macrocode}
 \newcounter{old@counter}
 \NewDocumentCommand{\repthm}{ m +o }{
@@ -451,9 +456,21 @@ colorlinks,
 			\expandafter\let\expandafter\@@thmtype\csname thmtype@#1\endcsname%
 		\else%
 			\def\@@thmtype{theorem}%
+			\PackageWarning{reptheorem}{%
+				Theorem '#1' has unknown theorem type. Assuming it is of
+				type 'theorem'.%
+			}
 		\fi%
 		%
 		% Save theorem counter so we don't increase it
+		\ifcsname c@\@@thmtype\endcsname
+		\else
+			\PackageWarning{reptheorem}{%
+				Counter '\@@thmtype' not defined; if theorem
+				'\@@thmtype' shares its counter with another
+				theorem, make sure thmtools is imported.%
+			}
+		\fi
 		\setcounter{old@counter}{\value{\@@thmtype}}
 		\setcounter{\@@thmtype}{-900}
 		\expandafter\def\csname the\@@thmtype\endcsname{\ref{#1}}
@@ -485,7 +502,7 @@ colorlinks,
 					Theorem #1 not defined; rebuild your project.
 					If the issue persists, create the theorem using
 					\begin{makethm} or consider adding alt text to \repthm
-					using the optional parameter%
+					using the optional parameter.%
 				}
 			}
 		\fi
