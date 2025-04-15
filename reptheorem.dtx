@@ -89,7 +89,7 @@ License: [LPPL1.3c](https://www.latex-project.org/lppl.txt)
 \input docstrip.tex
 \Msg{************************************************************************}
 \Msg{* Installation}
-\Msg{* Package: reptheorem 2024-10-07 v1.3}
+\Msg{* Package: reptheorem 2025-04-15 v1.5}
 \Msg{************************************************************************}
 
 \keepsilent
@@ -352,7 +352,7 @@ colorlinks,
 % \section{Source code}
 %    \begin{macrocode}
 %<*package>
-\ProvidesPackage{reptheorem}[2024-10-07 v1.3 Reptheorem package]
+\ProvidesPackage{reptheorem}[2025-04-15 v1.5 Reptheorem package]
 %    \end{macrocode}
 % \begin{macro}{\theoremfile}
 % Using |\theoremfile| will output all saved theorems into an output file.
@@ -369,12 +369,15 @@ colorlinks,
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\loadtheorems}
+% \changes{v1.5}{2025/04/15}{Now makes |@| catcode 11 to fix incompatibility.}
 % If you have exported saved theorems to a file, you can load them
 % into another file using the macro |\loadtheorems|.
 %    \begin{macrocode}
 \NewDocumentCommand{\loadtheorems}{ m }{
 	\IfFileExists{#1}{
+		\makeatletter
 		\input{#1}
+		\makeatother
 	}{
 		\PackageWarning{reptheorem}{%
 			File #1 not found. I will not import any theorems.%
@@ -382,6 +385,8 @@ colorlinks,
 	}
 }
 %    \end{macrocode}
+% The |\makeatletter| is included here to assure that any macros that are
+% expanded into macros that contain an |@| are interpreted correctly.
 % \end{macro}
 % \begin{environment}{makethm}
 % \changes{v1.1}{2024/05/03}{Now saves theorem environment type, breaking backwards compatibility.}
@@ -404,6 +409,7 @@ colorlinks,
 		}
 		% \begin{theorem}
 			#4
+			\providecommand{\label}[1]{}
 			\expandafter\gdef\csname thmtype@#2\endcsname{#1}%
 			\expandafter\long\expandafter\gdef\csname thm@#2\endcsname{#4}%
 			\IfValueT{#3}{% Only save theorem name if it exists
