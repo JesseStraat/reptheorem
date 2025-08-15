@@ -89,7 +89,7 @@ License: [LPPL1.3c](https://www.latex-project.org/lppl.txt)
 \input docstrip.tex
 \Msg{************************************************************************}
 \Msg{* Installation}
-\Msg{* Package: reptheorem 2025-08-15 v1.4}
+\Msg{* Package: reptheorem 2025-08-15 v1.4.1}
 \Msg{************************************************************************}
 
 \keepsilent
@@ -355,7 +355,7 @@ colorlinks,
 % \section{Source code}
 %    \begin{macrocode}
 %<*package>
-\ProvidesPackage{reptheorem}[2025-08-15 v1.4 Reptheorem package]
+\ProvidesPackage{reptheorem}[2025-08-15 v1.4.1 Reptheorem package]
 %    \end{macrocode}
 % \begin{macro}{\theoremfile}
 % Using |\theoremfile| will output all saved theorems into an output file.
@@ -397,6 +397,7 @@ colorlinks,
 % \changes{v1.2}{2024/09/22}{Theorem name is only saved if it exists.}
 % \changes{v1.2}{2024/09/22}{Renamed theorem output variable to be unique for each theorem.}
 % \changes{v1.4}{2025/08/15}{Added theorem label to aux file.}
+% \changes{v1.4.1}{2025/08/15}{Replaced hyperref-dependent macro.}
 % On to defining the actual theorems to be saved.
 %    \begin{macrocode}
 \NewDocumentEnvironment{makethm}{ m m o +b }
@@ -433,7 +434,7 @@ colorlinks,
 				}%
 				^^J%
 				\string\expandafter\string\gdef\noexpand%
-				\csname thmlabel@#2\string\endcsname{\getrefnumber{#2}}%
+				\csname thmlabel@#2\string\endcsname{\csname the#1\endcsname}%
 			}
 			\write\@auxout{\csname thmoutput@#2\endcsname}
 			\if\reptheorem@theoremfile\relax
