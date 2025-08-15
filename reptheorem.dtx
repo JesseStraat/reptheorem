@@ -89,7 +89,7 @@ License: [LPPL1.3c](https://www.latex-project.org/lppl.txt)
 \input docstrip.tex
 \Msg{************************************************************************}
 \Msg{* Installation}
-\Msg{* Package: reptheorem 2025-04-15 v1.5}
+\Msg{* Package: reptheorem 2025-08-15 v1.4}
 \Msg{************************************************************************}
 
 \keepsilent
@@ -305,6 +305,9 @@ colorlinks,
 % to replicate theorems ahead of time, similarly to
 % how one has to run a file twice to make sure the
 % references are correct.\par
+% It is also possible to use a starred version, \DescribeMacro{\repthm*} |\repthm*|.
+% It then automatically adds a star to the end of the theorem environment.
+% For example, |theorem| becomes |theorem*|.
 %^^A
 % \section{Replicating theorems between files}
 % Let's say we have the following files for our project:
@@ -352,7 +355,7 @@ colorlinks,
 % \section{Source code}
 %    \begin{macrocode}
 %<*package>
-\ProvidesPackage{reptheorem}[2025-04-15 v1.5 Reptheorem package]
+\ProvidesPackage{reptheorem}[2025-08-15 v1.4 Reptheorem package]
 %    \end{macrocode}
 % \begin{macro}{\theoremfile}
 % Using |\theoremfile| will output all saved theorems into an output file.
@@ -369,7 +372,7 @@ colorlinks,
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\loadtheorems}
-% \changes{v1.5}{2025/04/15}{Now makes |@| catcode 11 to fix incompatibility.}
+% \changes{v1.4}{2025/04/15}{Now makes |@| catcode 11 to fix incompatibility.}
 % If you have exported saved theorems to a file, you can load them
 % into another file using the macro |\loadtheorems|.
 %    \begin{macrocode}
@@ -393,6 +396,7 @@ colorlinks,
 % \changes{v1.2}{2024/09/21}{Environment end moved to fix vertical spacing.}
 % \changes{v1.2}{2024/09/22}{Theorem name is only saved if it exists.}
 % \changes{v1.2}{2024/09/22}{Renamed theorem output variable to be unique for each theorem.}
+% \changes{v1.4}{2025/08/15}{Added theorem label to aux file.}
 % On to defining the actual theorems to be saved.
 %    \begin{macrocode}
 \NewDocumentEnvironment{makethm}{ m m o +b }
@@ -422,11 +426,14 @@ colorlinks,
 				^^J%
 				\string\expandafter\string\long\string\expandafter%
 				\string\gdef\noexpand\csname thm@#2\string\endcsname{#4}%
-				\IfValueT{#3}{
+				\IfValueT{#3}{%
 				^^J%
 				\string\expandafter\string\gdef\noexpand%
 				\csname thmdesc@#2\string\endcsname{#3}%
-				}
+				}%
+				^^J%
+				\string\expandafter\string\gdef\noexpand%
+				\csname thmlabel@#2\string\endcsname{\getrefnumber{#2}}%
 			}
 			\write\@auxout{\csname thmoutput@#2\endcsname}
 			\if\reptheorem@theoremfile\relax
@@ -446,6 +453,7 @@ colorlinks,
 % \changes{v1.3}{2024/10/07}{Added hyperref named destination compatibility by setting counter to very low value.}
 % \changes{v1.3}{2024/10/07}{Changed thetheorem to csname to fix compatibility with theorem types not called ``theorem''.}
 % \changes{v1.4}{2024/11/05}{Added warnings for unknown counter and unknown theorem type.}
+% \changes{v1.4}{2025/08/15}{If reference doesn't exist, saved label is now used instead of ??. Added star option.}
 % To repeat a theorem, use the |\repthm| command.\par
 % If the theorem type shares its counter with another theorem type,
 % e.g., |lemma| having the same counter as |thoerem|, make sure you
@@ -453,41 +461,53 @@ colorlinks,
 % for the counters to work.
 %    \begin{macrocode}
 \newcounter{old@counter}
-\NewDocumentCommand{\repthm}{ m +o }{
+\NewDocumentCommand{\repthm}{ s m +o }{
+	% s: optional star to add to theorem environment
 	% m: the name of the theorem
 	% o: alt text
 	\begingroup
 		% Check if thmtype is given
-		\ifcsname thmtype@#1\endcsname%
-			\expandafter\let\expandafter\@@thmtype\csname thmtype@#1\endcsname%
+		\ifcsname thmtype@#2\endcsname%
+			\expandafter\let\expandafter\@@thmtype\csname thmtype@#2\endcsname%
 		\else%
 			\def\@@thmtype{theorem}%
 			\PackageWarning{reptheorem}{%
-				Theorem '#1' has unknown theorem type. Assuming it is of
+				Theorem '#2' has unknown theorem type. Assuming it is of
 				type 'theorem'.%
 			}
 		\fi%
+		\edef\@@thmcounter{\@@thmtype}
+		\IfBooleanT{#1}{\edef\@@thmtype{\@@thmtype*}}
 		%
 		% Save theorem counter so we don't increase it
-		\ifcsname c@\@@thmtype\endcsname
+		\ifcsname c@\@@thmcounter\endcsname
 		\else
 			\PackageWarning{reptheorem}{%
-				Counter '\@@thmtype' not defined; if theorem
-				'\@@thmtype' shares its counter with another
+				Counter '\@@thmcounter' not defined; if theorem
+				'\@@thmcounter' shares its counter with another
 				theorem, make sure thmtools is imported.%
 			}
 		\fi
-		\setcounter{old@counter}{\value{\@@thmtype}}
-		\setcounter{\@@thmtype}{-900}
-		\expandafter\def\csname the\@@thmtype\endcsname{\ref{#1}}
+		\setcounter{old@counter}{\value{\@@thmcounter}}
+		\setcounter{\@@thmcounter}{-900}
+		%
+		% Set label number
+		\ifcsname r@#2\endcsname
+			% Reference exists: set number as reference
+			\expandafter\def\csname the\@@thmtype\endcsname{\ref{#2}}
+		\else
+			% Force label number as saved
+			\expandafter\def\csname the\@@thmtype\endcsname{\csname thmlabel@#2\endcsname}
+		\fi
+		%
 		\let\@@theoremnotdefined\relax
 		%
-		\ifcsname thm@#1\endcsname% Check if theorem is even defined
+		\ifcsname thm@#2\endcsname% Check if theorem is even defined
 			% Theorem is defined
-			\expandafter\let\expandafter\@@thm\csname thm@#1\endcsname
+			\expandafter\let\expandafter\@@thm\csname thm@#2\endcsname
 			% Output theorem
-			\ifcsname thmdesc@#1\endcsname % Check if theorem has name
-				\begin{\@@thmtype}[\csname thmdesc@#1\endcsname]
+			\ifcsname thmdesc@#2\endcsname % Check if theorem has name
+				\begin{\@@thmtype}[\csname thmdesc@#2\endcsname]
 					\@@thm
 				\end{\@@thmtype}
 			\else % No optionals
@@ -497,22 +517,22 @@ colorlinks,
 			\fi
 		\else
 			% Theorem undefined
-			\IfValueTF{#2}{
+			\IfValueTF{#3}{
 				\begin{\@@thmtype}
-					#2
+					#3
 				\end{\@@thmtype}
 			}{% No theorem or alt text provided: throw warning
 				\begin{\@@thmtype}
 				\end{\@@thmtype}
 				\PackageWarning{reptheorem}{%
-					Theorem #1 not defined; rebuild your project.
+					Theorem '#2' not defined; rebuild your project.
 					If the issue persists, create the theorem using
 					\begin{makethm} or consider adding alt text to \repthm
 					using the optional parameter.%
 				}
 			}
 		\fi
-		\setcounter{\@@thmtype}{\value{old@counter}}
+		\setcounter{\@@thmcounter}{\value{old@counter}}
 		% Reset theorem counter back to original
     \endgroup
 }
