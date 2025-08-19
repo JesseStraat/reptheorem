@@ -9,7 +9,6 @@ jobs:
       - name: Compile LaTeX file
         uses: xu-cheng/latex-action@v4
         with:
-          working_directory: ./main
           root_file: reptheorem.dtx
       - name: Move files into folder
         run: |
