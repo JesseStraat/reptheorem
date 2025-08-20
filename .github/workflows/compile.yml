@@ -16,16 +16,17 @@ jobs:
             pdflatex reptheorem.dtx
       - name: Move files into folder
         run: |
-          mkdir reptheorem
-          mv reptheorem.dtx reptheorem/reptheorem.dtx
-          mv reptheorem.ins reptheorem/reptheorem.ins
-          mv README.md reptheorem/README.md
-          mv reptheorem.pdf reptheorem/reptheorem-doc.pdf
+          mkdir ctan
+          mkdir ctan/reptheorem
+          mv reptheorem.dtx ctan/reptheorem/reptheorem.dtx
+          mv reptheorem.ins ctan/reptheorem/reptheorem.ins
+          mv README.md ctan/reptheorem/README.md
+          mv reptheorem.pdf ctan/reptheorem/reptheorem-doc.pdf
       - name: Zip CTAN files
         uses: actions/upload-artifact@v4
         with:
           name: CTAN-files
-          path: reptheorem
+          path: ctan/
       - name: Zip sty file
         uses: actions/upload-artifact@v4
         with:
