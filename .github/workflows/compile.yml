@@ -16,6 +16,7 @@ jobs:
             pdflatex reptheorem.dtx
       - name: Move files into folder
         run: |
+          mkdir reptheorem
           mv reptheorem.dtx reptheorem/reptheorem.dtx
           mv reptheorem.ins reptheorem/reptheorem.ins
           mv README.md reptheorem/README.md
