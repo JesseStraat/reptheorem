@@ -89,7 +89,7 @@ License: [LPPL1.3c](https://www.latex-project.org/lppl.txt)
 \input docstrip.tex
 \Msg{************************************************************************}
 \Msg{* Installation}
-\Msg{* Package: reptheorem 2025-08-15 v1.4}
+\Msg{* Package: reptheorem 2025-08-20 v1.4.1}
 \Msg{************************************************************************}
 
 \keepsilent
@@ -355,7 +355,7 @@ colorlinks,
 % \section{Source code}
 %    \begin{macrocode}
 %<*package>
-\ProvidesPackage{reptheorem}[2025-08-15 v1.4 Reptheorem package]
+\ProvidesPackage{reptheorem}[2025-08-20 v1.4.1 Reptheorem package]
 %    \end{macrocode}
 % \begin{macro}{\theoremfile}
 % Using |\theoremfile| will output all saved theorems into an output file.
@@ -391,12 +391,23 @@ colorlinks,
 % The |\makeatletter| is included here to assure that any macros that are
 % expanded into macros that contain an |@| are interpreted correctly.
 % \end{macro}
+% \begin{macro}{repthm@firstoffive}
+% \changes{v1.4.1}{2025/08/20}{Added firstoffive command}
+% This returns the first of five arguments. It is used to get
+% the theorem number of a label.
+%    \begin{macrocode}
+\NewDocumentCommand{\repthm@firstoffive}{ m m m m m }{%
+    #1%
+}
+%    \end{macrocode}
+% \end{macro}
 % \begin{environment}{makethm}
 % \changes{v1.1}{2024/05/03}{Now saves theorem environment type, breaking backwards compatibility.}
 % \changes{v1.2}{2024/09/21}{Environment end moved to fix vertical spacing.}
 % \changes{v1.2}{2024/09/22}{Theorem name is only saved if it exists.}
 % \changes{v1.2}{2024/09/22}{Renamed theorem output variable to be unique for each theorem.}
 % \changes{v1.4}{2025/08/15}{Added theorem label to aux file.}
+% \changes{v1.4.1}{2025/08/20}{Replaced theorem label saving macro.}
 % On to defining the actual theorems to be saved.
 %    \begin{macrocode}
 \NewDocumentEnvironment{makethm}{ m m o +b }
@@ -433,7 +444,8 @@ colorlinks,
 				}%
 				^^J%
 				\string\expandafter\string\gdef\noexpand%
-				\csname thmlabel@#2\string\endcsname{\getrefnumber{#2}}%
+				\csname thmlabel@#2\string\endcsname{%
+				\expandafter\repthm@firstoffive\csname r@#2\endcsname}%
 			}
 			\write\@auxout{\csname thmoutput@#2\endcsname}
 			\if\reptheorem@theoremfile\relax
@@ -454,6 +466,7 @@ colorlinks,
 % \changes{v1.3}{2024/10/07}{Changed thetheorem to csname to fix compatibility with theorem types not called ``theorem''.}
 % \changes{v1.4}{2024/11/05}{Added warnings for unknown counter and unknown theorem type.}
 % \changes{v1.4}{2025/08/15}{If reference doesn't exist, saved label is now used instead of ??. Added star option.}
+% \changes{v1.4.1}{2025/08/20}{Added fallback for when no label is saved.}
 % To repeat a theorem, use the |\repthm| command.\par
 % If the theorem type shares its counter with another theorem type,
 % e.g., |lemma| having the same counter as |thoerem|, make sure you
@@ -497,7 +510,12 @@ colorlinks,
 			\expandafter\def\csname the\@@thmtype\endcsname{\ref{#2}}
 		\else
 			% Force label number as saved
-			\expandafter\def\csname the\@@thmtype\endcsname{\csname thmlabel@#2\endcsname}
+			\ifcsname thmlabel@#2\endcsname
+				\expandafter\def\csname the\@@thmtype\endcsname{\csname thmlabel@#2\endcsname}
+			\else
+				% No label number saved: revert to ??
+				\expandafter\def\csname the\@@thmtype\endcsname{\ref{#2}}
+			\fi
 		\fi
 		%
 		\let\@@theoremnotdefined\relax
