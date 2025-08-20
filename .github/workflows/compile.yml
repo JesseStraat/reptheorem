@@ -7,9 +7,13 @@ jobs:
       - name: Set up Git repository
         uses: actions/checkout@v4
       - name: Compile LaTeX file
-        uses: xu-cheng/latex-action@v4
+        uses: xu-cheng/texlive-action@v3
         with:
-          root_file: reptheorem.dtx
+          run: |
+            pdflatex reptheorem.dtx
+            makeindex -s gind.ist -o reptheorem.ind reptheorem.idx
+            makeindex -s gglo.ist -o reptheorem.gls reptheorem.glo
+            pdflatex reptheorem.dtx
       - name: Move files into folder
         run: |
           mv reptheorem.dtx reptheorem/reptheorem.dtx
