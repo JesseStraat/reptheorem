@@ -1,0 +1,34 @@
+name: Compile package
+on: [push]
+jobs:
+  build_package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v4
+      - name: Compile LaTeX file
+        uses: xu-cheng/texlive-action@v3
+        with:
+          run: |
+            pdflatex reptheorem.dtx
+            makeindex -s gind.ist -o reptheorem.ind reptheorem.idx
+            makeindex -s gglo.ist -o reptheorem.gls reptheorem.glo
+            pdflatex reptheorem.dtx
+      - name: Move files into folder
+        run: |
+          mkdir ctan
+          mkdir ctan/reptheorem
+          mv reptheorem.dtx ctan/reptheorem/reptheorem.dtx
+          mv reptheorem.ins ctan/reptheorem/reptheorem.ins
+          mv README.md ctan/reptheorem/README.md
+          mv reptheorem.pdf ctan/reptheorem/reptheorem-doc.pdf
+      - name: Zip CTAN files
+        uses: actions/upload-artifact@v4
+        with:
+          name: CTAN-files
+          path: ctan/
+      - name: Zip sty file
+        uses: actions/upload-artifact@v4
+        with:
+          name: package
+          path: reptheorem.sty
