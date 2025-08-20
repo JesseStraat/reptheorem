@@ -25,7 +25,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: CTAN-files
-          path: reptheorem/
+          path: reptheorem
       - name: Zip sty file
         uses: actions/upload-artifact@v4
         with:
