@@ -396,7 +396,7 @@ colorlinks,
 % This returns the first of five arguments. It is used to get
 % the theorem number of a label.
 %    \begin{macrocode}
-\NewDocumentCommand{\repthm@firstoffive}{ m m m m m }{%
+\NewExpandableDocumentCommand{\repthm@firstoffive}{ m m m m m }{%
     #1%
 }
 %    \end{macrocode}
@@ -445,7 +445,7 @@ colorlinks,
 				^^J%
 				\string\expandafter\string\gdef\noexpand%
 				\csname thmlabel@#2\string\endcsname{%
-				\expandafter\repthm@firstoffive\csname r@#2\endcsname}%
+				\expandafter\repthm@firstoffive\expanded{\csname r@#2\endcsname}}%
 			}
 			\write\@auxout{\csname thmoutput@#2\endcsname}
 			\if\reptheorem@theoremfile\relax
