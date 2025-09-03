@@ -473,7 +473,9 @@ colorlinks,
 				^^J%
 				\string\expandafter\string\gdef\noexpand%
 				\csname thmlabel@#2\string\endcsname{%
-				\repthm@ifrefexists{#2}{\expandafter\repthm@firstoffive\expanded{\csname r@#2\endcsname}}{}%
+				\repthm@ifrefexists{#2}{%
+					\expandafter\repthm@firstoffive\expanded{\csname r@#2\endcsname}%
+				}{}%
 				}%
 			}
 			\write\@auxout{\csname thmoutput@#2\endcsname}
@@ -540,7 +542,9 @@ colorlinks,
 		}{%
 			% Force label number as saved
 			\ifcsname thmlabel@#2\endcsname
-				\expandafter\def\csname the\@@thmtype\endcsname{\csname thmlabel@#2\endcsname}
+				\expandafter\def\csname the\@@thmtype\endcsname{%
+					\csname thmlabel@#2\endcsname%
+				}
 			\else
 				% No label number saved: revert to ??
 				\expandafter\def\csname the\@@thmtype\endcsname{\ref{#2}}
