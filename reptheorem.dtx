@@ -407,7 +407,7 @@ colorlinks,
 % \changes{v1.2}{2024/09/22}{Theorem name is only saved if it exists.}
 % \changes{v1.2}{2024/09/22}{Renamed theorem output variable to be unique for each theorem.}
 % \changes{v1.4}{2025/08/15}{Added theorem label to aux file.}
-% \changes{v1.4.1}{2025/09/03}{Replaced theorem label saving macro.}
+% \changes{v1.4.1}{2025/08/20}{Replaced theorem label saving macro.}
 % On to defining the actual theorems to be saved.
 %    \begin{macrocode}
 \NewDocumentEnvironment{makethm}{ m m o +b }
@@ -446,8 +446,8 @@ colorlinks,
 				\string\expandafter\string\gdef\noexpand%
 				\csname thmlabel@#2\string\endcsname{%
 				\ifcsname r@#2\endcsname%
-				\expandafter\repthm@firstoffive\expanded{\csname r@#2\endcsname}}%
-				\else\fi%
+				\expandafter\repthm@firstoffive\expanded{\csname r@#2\endcsname}%
+				\else\fi}%
 			}
 			\write\@auxout{\csname thmoutput@#2\endcsname}
 			\if\reptheorem@theoremfile\relax
