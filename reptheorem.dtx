@@ -89,7 +89,7 @@ License: [LPPL1.3c](https://www.latex-project.org/lppl.txt)
 \input docstrip.tex
 \Msg{************************************************************************}
 \Msg{* Installation}
-\Msg{* Package: reptheorem 2025-08-20 v1.4.1}
+\Msg{* Package: reptheorem 2025-09-03 v1.4.1}
 \Msg{************************************************************************}
 
 \keepsilent
@@ -355,7 +355,7 @@ colorlinks,
 % \section{Source code}
 %    \begin{macrocode}
 %<*package>
-\ProvidesPackage{reptheorem}[2025-08-20 v1.4.1 Reptheorem package]
+\ProvidesPackage{reptheorem}[2025-09-03 v1.4.1 Reptheorem package]
 %    \end{macrocode}
 % \begin{macro}{\theoremfile}
 % Using |\theoremfile| will output all saved theorems into an output file.
@@ -398,6 +398,33 @@ colorlinks,
 %    \begin{macrocode}
 \NewExpandableDocumentCommand{\repthm@firstoffive}{ m m m m m }{%
     #1%
+}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{repthm@ifrefexists}
+% \changes{v1.4.1}{2025/09/03}{Added ifrefexists command}
+% This command checks whether a label was defined in the auxiliary file.
+% Using just |\ifcsname r@foo\endcsname| is not sufficient, since
+% |\ref{foo}| defines |\r@foo| using a placeholder variable if the reference
+% does not exist.
+%    \begin{macrocode}
+\NewExpandableDocumentCommand{\repthm@ifrefexists}{ m +m +m }{%
+	% m: the label
+	% m: code to run if true
+	% m: code to run if false
+	\ifcsname r@#1\endcsname
+		% reference exists but might be dummy
+		\expandafter\ifx\csname r@#1\endcsname\relax
+			% reference is a dummy
+			#3%
+		\else
+			% reference exists and is not a dummy
+			#2%
+		\fi
+	\else
+		% reference doesn't exist
+		#3%
+	\fi
 }
 %    \end{macrocode}
 % \end{macro}
@@ -445,9 +472,8 @@ colorlinks,
 				^^J%
 				\string\expandafter\string\gdef\noexpand%
 				\csname thmlabel@#2\string\endcsname{%
-				\ifcsname r@#2\endcsname%
-				\expandafter\repthm@firstoffive\expanded{\csname r@#2\endcsname}%
-				\else\fi}%
+				\repthm@ifrefexists{#2}{\expandafter\repthm@firstoffive\expanded{\csname r@#2\endcsname}}{}%
+				}%
 			}
 			\write\@auxout{\csname thmoutput@#2\endcsname}
 			\if\reptheorem@theoremfile\relax
@@ -468,7 +494,7 @@ colorlinks,
 % \changes{v1.3}{2024/10/07}{Changed thetheorem to csname to fix compatibility with theorem types not called ``theorem''.}
 % \changes{v1.4}{2024/11/05}{Added warnings for unknown counter and unknown theorem type.}
 % \changes{v1.4}{2025/08/15}{If reference doesn't exist, saved label is now used instead of ??. Added star option.}
-% \changes{v1.4.1}{2025/08/20}{Added fallback for when no label is saved.}
+% \changes{v1.4.1}{2025/09/03}{Added fallback for when no label is saved.}
 % To repeat a theorem, use the |\repthm| command.\par
 % If the theorem type shares its counter with another theorem type,
 % e.g., |lemma| having the same counter as |thoerem|, make sure you
@@ -507,10 +533,10 @@ colorlinks,
 		\setcounter{\@@thmcounter}{-900}
 		%
 		% Set label number
-		\ifcsname r@#2\endcsname
+		\repthm@ifrefexists{#2}{%
 			% Reference exists: set number as reference
 			\expandafter\def\csname the\@@thmtype\endcsname{\ref{#2}}
-		\else
+		}{%
 			% Force label number as saved
 			\ifcsname thmlabel@#2\endcsname
 				\expandafter\def\csname the\@@thmtype\endcsname{\csname thmlabel@#2\endcsname}
@@ -518,7 +544,7 @@ colorlinks,
 				% No label number saved: revert to ??
 				\expandafter\def\csname the\@@thmtype\endcsname{\ref{#2}}
 			\fi
-		\fi
+		}
 		%
 		\let\@@theoremnotdefined\relax
 		%
