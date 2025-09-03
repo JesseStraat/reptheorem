@@ -230,14 +230,14 @@ colorlinks,
 % Let's say we define a theorem as follows:
 % \begin{verbatim}
 % \begin{theorem}[Yoneda Lemma]
-%     For \(F\colon \mathcal{C}\to \mathbf{Set}\) a functor,
+%     For \(F\colon \mathcal{C}^\mathrm{op}\to \mathbf{Set}\) a functor,
 %     \([\mathcal{C}^\mathrm{op},\mathbf{Set}](YA, F) \cong F(A)\)%
 %     for all objects \(A\) in \(\mathcal{C}\).
 % \end{theorem}
 % \end{verbatim}
 % Its output is of course
 % \begin{makethm}{theorem}{thm:Yoneda}[Yoneda Lemma]
-%     For \(F\colon \mathcal{C}\to \mathbf{Set}\) a functor,
+%     For \(F\colon \mathcal{C}^\mathrm{op}\to \mathbf{Set}\) a functor,
 %     \([\mathcal{C}^\mathrm{op},\mathbf{Set}](YA, F) \cong F(A)\)
 %     for all objects \(A\) in \(\mathcal{C}\).
 % \end{makethm}
@@ -247,7 +247,7 @@ colorlinks,
 % used for.
 % \begin{verbatim}
 % \begin{makethm}{theorem}{thm:Yoneda}[Yoneda Lemma]
-%     For \(F\colon \mathcal{C}\to \mathbf{Set}\) a functor,
+%     For \(F\colon \mathcal{C}^\mathrm{op}\to \mathbf{Set}\) a functor,
 %     \([\mathcal{C}^\mathrm{op},\mathbf{Set}](YA, F) \cong F(A)\)
 %     for all objects \(A\) in \(\mathcal{C}\).
 % \end{makethm}
@@ -299,7 +299,7 @@ colorlinks,
 % returns
 % \repthm{thm:later}
 % \begin{makethm}{theorem}{thm:later}
-%     Alligator
+%     Alligator!
 % \end{makethm}
 % Note that it is necessary to run a |.tex| file twice
 % to replicate theorems ahead of time, similarly to
