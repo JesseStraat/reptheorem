@@ -89,7 +89,7 @@ License: [LPPL1.3c](https://www.latex-project.org/lppl.txt)
 \input docstrip.tex
 \Msg{************************************************************************}
 \Msg{* Installation}
-\Msg{* Package: reptheorem 2025-09-03 v1.4.1}
+\Msg{* Package: reptheorem 2026-07-28 v1.5}
 \Msg{************************************************************************}
 
 \keepsilent
@@ -160,7 +160,7 @@ and the derived files
 %</ignore>
 
 %<*driver>
-\NeedsTeXFormat{LaTeX2e}[2020/10/01]
+\NeedsTeXFormat{LaTeX2e}[2026/06/01]
 \documentclass{ltxdoc}
 \usepackage{\jobname}
 \usepackage{amsthm}
@@ -357,7 +357,7 @@ colorlinks,
 % \section{Source code}
 %    \begin{macrocode}
 %<*package>
-\ProvidesPackage{reptheorem}[2025-09-03 v1.4.1 Reptheorem package]
+\ProvidesPackage{reptheorem}[2026-07-28 v1.5 Reptheorem package]
 %    \end{macrocode}
 % \begin{macro}{\theoremfile}
 % Using |\theoremfile| will output all saved theorems into an output file.
@@ -385,7 +385,7 @@ colorlinks,
 		\makeatother
 	}{
 		\PackageWarning{reptheorem}{%
-			File #1 not found. I will not import any theorems.%
+			File #1 not found. I will not import any theorems%
 		}
 	}
 }
@@ -393,7 +393,7 @@ colorlinks,
 % The |\makeatletter| is included here to assure that any macros that are
 % expanded into macros that contain an |@| are interpreted correctly.
 % \end{macro}
-% \begin{macro}{repthm@firstoffive}
+% \begin{macro}{\repthm@firstoffive}
 % \changes{v1.4.1}{2025/08/20}{Added firstoffive command}
 % This returns the first of five arguments. It is used to get
 % the theorem number of a label.
@@ -403,7 +403,7 @@ colorlinks,
 }
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{repthm@ifrefexists}
+% \begin{macro}{\repthm@ifrefexists}
 % \changes{v1.4.1}{2025/09/03}{Added ifrefexists command}
 % This command checks whether a label was defined in the auxiliary file.
 % Using just |\ifcsname r@foo\endcsname| is not sufficient, since
@@ -514,11 +514,8 @@ colorlinks,
 % \changes{v1.4}{2024/11/05}{Added warnings for unknown counter and unknown theorem type.}
 % \changes{v1.4}{2025/08/15}{If reference doesn't exist, saved label is now used instead of ??. Added star option.}
 % \changes{v1.4.1}{2025/09/03}{Added fallback for when no label is saved.}
-% To repeat a theorem, use the |\repthm| command.\par
-% If the theorem type shares its counter with another theorem type,
-% e.g., |lemma| having the same counter as |thoerem|, make sure you
-% have |thmtools| imported. Its |\@counteralias| macro is essential
-% for the counters to work.
+% \changes{v1.5}{2026/07/28}{Removed reference to thmtools since counter aliases are now part of \LaTeX{}.}
+% To repeat a theorem, use the |\repthm| command.
 %    \begin{macrocode}
 \newcounter{old@counter}
 \NewDocumentCommand{\repthm}{ s m +o }{
@@ -533,7 +530,7 @@ colorlinks,
 			\def\@@thmtype{theorem}%
 			\PackageWarning{reptheorem}{%
 				Theorem '#2' has unknown theorem type. Assuming it is of
-				type 'theorem'.%
+				type 'theorem'%
 			}
 		\fi%
 		\edef\@@thmcounter{\@@thmtype}
@@ -543,9 +540,7 @@ colorlinks,
 		\ifcsname c@\@@thmcounter\endcsname
 		\else
 			\PackageWarning{reptheorem}{%
-				Counter '\@@thmcounter' not defined; if theorem
-				'\@@thmcounter' shares its counter with another
-				theorem, make sure thmtools is imported.%
+				Counter '\@@thmcounter' not defined.%
 			}
 		\fi
 		\setcounter{old@counter}{\value{\@@thmcounter}}
@@ -595,7 +590,7 @@ colorlinks,
 					Theorem '#2' not defined; rebuild your project.
 					If the issue persists, create the theorem using
 					\begin{makethm} or consider adding alt text to \repthm
-					using the optional parameter.%
+					using the optional parameter%
 				}
 			}
 		\fi
