@@ -384,7 +384,7 @@ colorlinks,
 		\makeatother
 	}{
 		\PackageWarning{reptheorem}{%
-			File #1 not found. I will not import any theorems.%
+			File #1 not found. I will not import any theorems%
 		}
 	}
 }
@@ -392,7 +392,7 @@ colorlinks,
 % The |\makeatletter| is included here to assure that any macros that are
 % expanded into macros that contain an |@| are interpreted correctly.
 % \end{macro}
-% \begin{macro}{repthm@firstoffive}
+% \begin{macro}{\repthm@firstoffive}
 % \changes{v1.4.1}{2025/08/20}{Added firstoffive command}
 % This returns the first of five arguments. It is used to get
 % the theorem number of a label.
@@ -402,7 +402,7 @@ colorlinks,
 }
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{repthm@ifrefexists}
+% \begin{macro}{\repthm@ifrefexists}
 % \changes{v1.4.1}{2025/09/03}{Added ifrefexists command}
 % This command checks whether a label was defined in the auxiliary file.
 % Using just |\ifcsname r@foo\endcsname| is not sufficient, since
@@ -514,7 +514,7 @@ colorlinks,
 			\def\@@thmtype{theorem}%
 			\PackageWarning{reptheorem}{%
 				Theorem '#2' has unknown theorem type. Assuming it is of
-				type 'theorem'.%
+				type 'theorem'%
 			}
 		\fi%
 		\edef\@@thmcounter{\@@thmtype}
@@ -574,7 +574,7 @@ colorlinks,
 					Theorem '#2' not defined; rebuild your project.
 					If the issue persists, create the theorem using
 					\begin{makethm} or consider adding alt text to \repthm
-					using the optional parameter.%
+					using the optional parameter%
 				}
 			}
 		\fi
