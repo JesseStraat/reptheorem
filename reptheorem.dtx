@@ -188,6 +188,7 @@ colorlinks,
 % \DoNotIndex{\ProvidesPackage,\ref,\relax,\setcounter}
 % \DoNotIndex{\string,\value,\write,\expanded,\IfBooleanT,\IfValueT,\ifx}
 % \DoNotIndex{\makeatletter,\makeatother,\NewExpandableDocumentCommand,\providecommand}
+% \DoNotIndex{\{,\},\@auxout,\c,\g,\l,\regex,\tl}
 %
 % \title{^^A
 %     \textsf{reptheorem}\thanks{^^A
@@ -436,8 +437,11 @@ colorlinks,
 % \changes{v1.2}{2024/09/22}{Renamed theorem output variable to be unique for each theorem.}
 % \changes{v1.4}{2025/08/15}{Added theorem label to aux file.}
 % \changes{v1.4.1}{2025/08/20}{Replaced theorem label saving macro.}
+% \changes{v1.5}{2026/07/28}{Labels are now disabled in saved theorem.}
 % On to defining the actual theorems to be saved.
 %    \begin{macrocode}
+\ExplSyntaxOn
+\tl_new:N \g_reptheorem_thminput_tl
 \NewDocumentEnvironment{makethm}{ m m o +b }
 	% m: the type of theorem environment
 	% m: the name of the theorem
@@ -452,9 +456,18 @@ colorlinks,
 		}
 		% \begin{theorem}
 			#4
-			\providecommand{\label}[1]{}
+%    \end{macrocode}
+% Saving labels inside theorems leads to all sorts of issues
+% (multiply defining labels, the |.aux| file breaking), so we
+% should filter those out using regex.
+%    \begin{macrocode}
+			\tl_set:Nn \l_tmpa_tl {#4}
+			\regex_replace_all:nnN { \c{label}\{[^{}]*\} } { } \l_tmpa_tl
+			\tl_gset_eq:NN \g_reptheorem_thminput_tl \l_tmpa_tl
 			\expandafter\gdef\csname thmtype@#2\endcsname{#1}%
-			\expandafter\long\expandafter\gdef\csname thm@#2\endcsname{#4}%
+			\expandafter\long\expandafter\gdef\csname thm@#2\endcsname{
+				\tl_use:N \g_reptheorem_thminput_tl
+			}%
 			\IfValueT{#3}{% Only save theorem name if it exists
 				\expandafter\gdef\csname thmdesc@#2\endcsname{#3}%
 			}
@@ -464,7 +477,9 @@ colorlinks,
 				\csname thmtype@#2\string\endcsname{#1}%
 				^^J%
 				\string\expandafter\string\long\string\expandafter%
-				\string\gdef\noexpand\csname thm@#2\string\endcsname{#4}%
+				\string\gdef\noexpand\csname thm@#2\string\endcsname{
+					\tl_use:N \g_reptheorem_thminput_tl
+				}%
 				\IfValueT{#3}{%
 				^^J%
 				\string\expandafter\string\gdef\noexpand%
@@ -488,6 +503,7 @@ colorlinks,
 			\fi
 		\end{#1}
 	}{}
+\ExplSyntaxOff
 %    \end{macrocode}
 % \end{environment}
 % \begin{macro}{\repthm}
