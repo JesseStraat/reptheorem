@@ -165,6 +165,7 @@ and the derived files
 \usepackage{\jobname}
 \usepackage{amsthm}
 \newtheorem{theorem}{Theorem}
+\newtheorem*{theorem*}{Theorem}
 \usepackage[final,
 hyperindex=false,
 colorlinks,
@@ -309,7 +310,8 @@ colorlinks,
 % references are correct.\par
 % It is also possible to use a starred version, \DescribeMacro{\repthm*} |\repthm*|.
 % It then automatically adds a star to the end of the theorem environment.
-% For example, |theorem| becomes |theorem*|.
+% For example, |\repthm*{thm:later}| returns
+% \repthm*{thm:later}
 %^^A
 % \section{Replicating theorems between files}
 % Let's say we have the following files for our project:
