@@ -515,7 +515,8 @@ colorlinks,
 % \changes{v1.4}{2025/08/15}{If reference doesn't exist, saved label is now used instead of ??. Added star option.}
 % \changes{v1.4.1}{2025/09/03}{Added fallback for when no label is saved.}
 % \changes{v1.5}{2026/07/28}{Removed reference to thmtools since counter aliases are now part of \LaTeX{}.}
-% \changes{v1.5}{2026/08/10}{Improved warnings (instructing a rerun), added counter backup, and replaced some |\@@thmtype|s with |\@@thmcounter|s.}
+% \changes{v1.5}{2026/08/10}{Improved warnings (instructing a rerun), added counter backup, and replaced some thmtypes with thmcounters.}
+% \changes{v1.5}{2026/08/10}{Changed defs to renewcommands in reference for beamer compatibility.}
 % To repeat a theorem, use the |\repthm| command.
 %    \begin{macrocode}
 \newcounter{old@counter}
@@ -554,16 +555,16 @@ colorlinks,
 		% Set label number
 		\repthm@ifrefexists{#2}{%
 			% Reference exists: set number as reference
-			\expandafter\def\csname the\@@thmcounter\endcsname{\ref{#2}}
+			\expandafter\renewcommand\csname the\@@thmcounter\endcsname{\ref{#2}}
 		}{%
 			% Force label number as saved
 			\ifcsname thmlabel@#2\endcsname
-				\expandafter\def\csname the\@@thmcounter\endcsname{%
+				\expandafter\renewcommand\csname the\@@thmcounter\endcsname{%
 					\csname thmlabel@#2\endcsname%
 				}
 			\else
 				% No label number saved: revert to ??
-				\expandafter\def\csname the\@@thmcounter\endcsname{\ref{#2}}
+				\expandafter\renewcommand\csname the\@@thmcounter\endcsname{\ref{#2}}
 			\fi
 		}
 		%
